@@ -15,6 +15,7 @@ db.init_app(app)
 
 # Create all tables
 with app.app_context():
+    db.drop_all()
     db.create_all()
 
 # Load trained ML model
@@ -43,7 +44,12 @@ def predict():
     db.session.add(patient)
     db.session.commit()
 
-    return jsonify({"prediction": prediction})
+    # Return response with prediction and timestamp
+    return jsonify({
+        "prediction": prediction,
+        "timestamp": patient.timestamp.strftime("%Y-%m-%d %H:%M:%S")
+    })
+
 
 if __name__ == "__main__":
     app.run(debug=True)
